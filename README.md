@@ -1,4 +1,5 @@
 # Project 1
+[Due: Tuesday, March 24, 2015]
 
 Your task is to develop a simulation of a scheduler that assigns processes (or jobs) to a set of available processors or processing nodes. 
 
