@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include "const.h"
 #include "process.h"
 #include "generator.h"
@@ -6,18 +7,21 @@
 using namespace std;
 
 // Initialize the process list with values
-void init_process_list(PROCESS *process_list) {
+void init_process_list(list<process> &p_list) {
 
-    generator generate;
+    generator generate; // Random number generator class
+    process p;
 
     for(int i = 0; i < process_count; i++) {
-        process_list[i].process_id = i;
-        process_list[i].cpu_cycles = generate.rand_num_between(cycle_lbound, cycle_ubound);
-        process_list[i].mem_footprint = generate.rand_num_between(mem_lbound, mem_ubound);
+        p.process_id = i;
+        p.cpu_cycles = generate.rand_num_between(cycle_lbound, cycle_ubound);
+        p.mem_footprint = generate.rand_num_between(mem_lbound, mem_ubound);
+        p_list.push_back(p);
     }
 
 }
 
+// Initialize processor array
 void init_processor_list(int *processor_list) {
 
     for(int i = 0; i < processor_count; i++)
@@ -25,23 +29,24 @@ void init_processor_list(int *processor_list) {
 
 }
 
-void print_process_list(PROCESS *process_list) {
+void print_process_list(list<process> &p_list) {
+
+    list<process>::iterator it;
 
     cout << "\n" << "PID" << "\tBurst Time" << "\tMemory Footprint" << "\n" << endl;
 
-    for(int i = 0; i < process_count; i++) {
-        cout << process_list[i].process_id << "\t" << process_list[i].cpu_cycles << "\t\t" << process_list[i].mem_footprint << endl;
-    }
+    for(it = p_list.begin(); it != p_list.end(); it++)
+        cout << it->process_id << "\t" << it->cpu_cycles << "\t\t" << it->mem_footprint << endl;
 
 }
 
 int main() {
 
-    PROCESS processes[process_count];
+    list<process> process_list;
     int cpu[processor_count];
 
-    init_process_list(processes);
+    init_process_list(process_list);
     init_processor_list(cpu);
-    print_process_list(processes);
+    print_process_list(process_list);
 
 }
