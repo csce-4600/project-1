@@ -1,5 +1,6 @@
 #include <iostream>
-#include <list>
+#include <vector>
+#include <algorithm>  
 #include "const.h"
 #include "process.h"
 #include "generator.h"
@@ -7,7 +8,9 @@
 using namespace std;
 
 // Initialize the process list with values
-void init_process_list(list<process> &p_list) {
+void init_process_list(vector<process> &p_list) {
+
+    cout << "\n>> Generating process list...";
 
     generator generate; // Random number generator class
     process p;
@@ -19,6 +22,8 @@ void init_process_list(list<process> &p_list) {
         p_list.push_back(p);
     }
 
+    cout << "Done" << endl;
+
 }
 
 // Initialize processor array
@@ -29,9 +34,13 @@ void init_processor_list(int *processor_list) {
 
 }
 
-void print_process_list(list<process> &p_list) {
+bool compare_cycles(const process &lhs, const process &rhs) { 
+    return lhs.cpu_cycles < rhs.cpu_cycles;  
+}
 
-    list<process>::iterator it;
+void print_process_list(vector<process> &p_list) {
+
+    vector<process>::iterator it;
 
     cout << "\n" << "PID" << "\tBurst Time" << "\tMemory Footprint" << "\n" << endl;
 
@@ -40,13 +49,23 @@ void print_process_list(list<process> &p_list) {
 
 }
 
+void schedule_processes(vector<process> &p_list, int *procesor) {
+
+    // Sort process list by cpu cycles in the ascending order
+    sort(p_list.begin(), p_list.end(), compare_cycles);
+
+}
+
 int main() {
 
-    list<process> process_list;
+    vector<process> process_list;
     int cpu[processor_count];
 
     init_process_list(process_list);
     init_processor_list(cpu);
+
     print_process_list(process_list);
+    
+    schedule_processes(process_list, cpu);
 
 }
