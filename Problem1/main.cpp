@@ -34,10 +34,6 @@ void init_processor_list(int *processor_list) {
 
 }
 
-bool compare_cycles(const process &lhs, const process &rhs) { 
-    return lhs.cpu_cycles < rhs.cpu_cycles;  
-}
-
 void print_process_list(vector<process> &p_list) {
 
     vector<process>::iterator it;
@@ -49,10 +45,20 @@ void print_process_list(vector<process> &p_list) {
 
 }
 
-void schedule_processes(vector<process> &p_list, int *procesor) {
+bool compare_cycles(const process &lhs, const process &rhs) { 
+    return lhs.cpu_cycles < rhs.cpu_cycles;  
+}
 
-    // Sort process list by cpu cycles in the ascending order
+void schedule_processes(vector<process> &p_list, int *processor) {
+
+    // Sort process list by cpu cycles in the ascending order (SJF)
     sort(p_list.begin(), p_list.end(), compare_cycles);
+
+    do{
+        cout << "\nScheduling PID: " << p_list.begin()->process_id << endl;
+        // Assign process here
+        p_list.erase(p_list.begin());
+    } while(p_list.size() != 0);
 
 }
 
@@ -64,7 +70,7 @@ int main() {
     init_process_list(process_list);
     init_processor_list(cpu);
 
-    print_process_list(process_list);
+    // print_process_list(process_list);
     
     schedule_processes(process_list, cpu);
 
