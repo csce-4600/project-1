@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>  
+#include <algorithm> 
+#include <future> 
 #include "const.h"
 #include "process.h"
+#include "processor.h"
 #include "generator.h"
 
 using namespace std;
@@ -26,14 +28,6 @@ void init_process_list(vector<process> &p_list) {
 
 }
 
-// Initialize processor array
-void init_processor_list(int *processor_list) {
-
-    for(int i = 0; i < processor_count; i++)
-        processor_list[i] = 0;
-
-}
-
 void print_process_list(vector<process> &p_list) {
 
     vector<process>::iterator it;
@@ -49,15 +43,32 @@ bool compare_cycles(const process &lhs, const process &rhs) {
     return lhs.cpu_cycles < rhs.cpu_cycles;  
 }
 
-void schedule_processes(vector<process> &p_list, int *processor) {
+void schedule_processes(vector<process> &p_list, processor *p_core) {
+
+    vector<process>::iterator current_process;
 
     // Sort process list by cpu cycles in the ascending order (SJF)
     sort(p_list.begin(), p_list.end(), compare_cycles);
 
     do{
-        cout << "\nScheduling PID: " << p_list.begin()->process_id << endl;
-        // Assign process here
-        p_list.erase(p_list.begin());
+
+        for (int i = 0; i < processor_count; i++) {
+
+            current_process = p_list.begin();
+
+            // Check which processors are available
+            if (!p_core[i].is_busy()) {
+
+                cout << "\nScheduling PID: " << current_process->process_id << " on processor " << i << endl;
+                std::async(std::launch::async, &processor::assign_process, p_core[i], current_process);
+                p_list.erase(p_list.begin());   
+
+            }
+
+            if (i == 5) i = 0;
+
+        }
+
     } while(p_list.size() != 0);
 
 }
@@ -65,13 +76,10 @@ void schedule_processes(vector<process> &p_list, int *processor) {
 int main() {
 
     vector<process> process_list;
-    int cpu[processor_count];
+    processor processor_core[processor_count];
 
     init_process_list(process_list);
-    init_processor_list(cpu);
-
-    // print_process_list(process_list);
-    
-    schedule_processes(process_list, cpu);
+    print_process_list(process_list);
+    schedule_processes(process_list, processor_core);
 
 }
