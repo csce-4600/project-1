@@ -61,7 +61,7 @@ void schedule_processes(vector<process> &p_list, processor *p_core) {
 
                 cout << "\nScheduling PID: " << current_process->process_id << " on processor " << i << endl;
                 std::async(std::launch::async, &processor::assign_process, p_core[i], current_process);
-                p_list.erase(p_list.begin());   
+                p_list.erase(current_process);   
 
             }
 
