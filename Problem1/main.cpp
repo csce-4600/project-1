@@ -28,17 +28,6 @@ void init_process_list(vector<process> &p_list) {
 
 }
 
-void print_process_list(vector<process> &p_list) {
-
-    vector<process>::iterator it;
-
-    cout << "\n" << "PID" << "\tBurst Time" << "\tMemory Footprint" << "\n" << endl;
-
-    for(it = p_list.begin(); it != p_list.end(); it++)
-        cout << it->process_id << "\t" << it->cpu_cycles << "\t\t" << it->mem_footprint << endl;
-
-}
-
 bool compare_cycles(const process &lhs, const process &rhs) { 
     return lhs.cpu_cycles < rhs.cpu_cycles;  
 }
@@ -59,7 +48,7 @@ void schedule_processes(vector<process> &p_list, processor *p_core) {
             // Check which processors are available
             if (!p_core[i].is_busy()) {
 
-                cout << "\nScheduling PID: " << current_process->process_id << " on processor " << i << endl;
+                cout << "\nScheduling PID: " << current_process->process_id << " with " << current_process->cpu_cycles << " cycles on processor " << i << endl;
                 std::async(std::launch::async, &processor::assign_process, p_core[i], current_process);
                 p_list.erase(current_process);   
 
@@ -79,7 +68,6 @@ int main() {
     processor processor_core[processor_count];
 
     init_process_list(process_list);
-    print_process_list(process_list);
     schedule_processes(process_list, processor_core);
 
 }
