@@ -9,6 +9,8 @@
 
 using namespace std;
 
+long long tot_time = 0;
+
 // Initialize the process list with values
 void init_process_list(vector<process> &p_list) {
 
@@ -45,20 +47,19 @@ void schedule_processes(vector<process> &p_list, processor *p_core) {
 
             current_process = p_list.begin();
 
-            // Check which processors are available
+            // Check which processors are available and assign processes accordingly
             if (!p_core[i].is_busy()) {
-
-                cout << "\nScheduling PID: " << current_process->process_id << " with " << current_process->cpu_cycles << " cycles on processor " << i << endl;
-                std::async(std::launch::async, &processor::assign_process, p_core[i], current_process);
+                cout << "\nScheduling PID: " << current_process->process_id << " with " << current_process->cpu_cycles << " cycles" << endl;
+                p_core[i].assign_process(current_process);
+                tot_time += current_process->cpu_cycles;
                 p_list.erase(current_process);   
-
             }
-
-            if (i == 5) i = 0;
 
         }
 
     } while(p_list.size() != 0);
+
+    cout << "\nTotal turnaround time: " << (long double)(tot_time / speed) << " seconds" << endl;
 
 }
 

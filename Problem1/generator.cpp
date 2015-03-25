@@ -5,7 +5,7 @@
 
 using namespace std;
 
-long generator::rand_num_between(long lbound, long ubound) {
+long generator::rand_num_between(long long lbound, long long ubound) {
 
 	// construct a trivial random generator engine from a time-based seed:
 	unsigned seed = chrono::system_clock::now().time_since_epoch().count();
