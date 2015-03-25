@@ -3,7 +3,7 @@
 
 class generator {
 	public:
-		long rand_num_between(long, long);
+		long rand_num_between(long long, long long);
 };
 
 #endif

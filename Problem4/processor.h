@@ -7,7 +7,7 @@ class processor {
 
 	public:
 		bool is_busy();
-		void assign_process(const std::vector<process>::iterator &p);
+		void assign_process(std::vector<process>::iterator &p);
 
 };
 
